@@ -1,0 +1,35 @@
+pipeline {
+    agent any
+    
+    stages {
+        stage('Checkout Code') {
+            steps {
+                echo '✅ Checking out code...'
+                git branch: 'main', url: 'https://github.com/iamtejasmane/aws-three-tier-web-app.git'
+            }
+        }
+    }
+}
+    stages {
+        stage('install node js') {
+            steps {
+                sh '''
+                        curl -o https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash
+                        source ~/.bashrc
+                        nvm install 16
+                        nvm use 16
+                    '''
+            }
+        }
+    }
+    stage('Build React from web-tier folder') {
+            steps {
+                echo '📂 Moving to web-tier and installing dependencies...'
+                dir('application-code/web-tier') {
+                    sh '''
+                        npm install
+                        npm run build
+                    '''
+                }
+            }
+}
